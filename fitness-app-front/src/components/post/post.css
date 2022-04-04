@@ -1,0 +1,13 @@
+.post {
+    margin-top: 10vh;
+    padding: 0 100px;
+}
+
+.post img {
+    max-width: 100%;
+}
+
+.post h2 {
+    font-weight: bold;
+    font-size: 3em;
+}

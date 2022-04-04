@@ -1,0 +1,22 @@
+.home-posts {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #c79288;
+}
+
+.home-posts h1 {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    color:white;
+}
+.home-block {
+    width: 90vw;
+    color: black;
+}
+
+.home-block.row {
+    margin-right: 0;
+}

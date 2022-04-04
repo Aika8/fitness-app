@@ -1,0 +1,52 @@
+.navbar {
+    height: 130px;
+    background-color: #000;
+}
+
+.container-fluid{
+    margin-left: 5em;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.navbar-collapse {
+    justify-content: right;
+    margin-right: 5em;
+    font-size: 1.1em;
+}
+
+.header-text {
+    height: 100vh;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+    display: flex;
+    align-items: center;
+}
+
+.header-text-block {
+    margin-left: 5em;
+}
+
+.header-text-block h2{
+    color: white;
+    font-size: 3em;
+    margin-top: -3em;
+    margin-bottom: 1em;
+}
+
+.header-text-block p{
+    color: white;
+    font-size: 1.2em;
+    margin-bottom: 2em;
+}
+
+.header-text-block button {
+    color: #fff;
+    background-color: #c79288;
+    border-color: #c79288;
+    padding: 1.2em 2em;
+}
