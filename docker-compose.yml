@@ -10,10 +10,8 @@ services:
       - "6379:6379"
     restart: always
     depends_on:
-      elasticsearch:
-        condition: service_healthy
-      PostgreSQL:
-        condition: service_healthy
+      - elasticsearch
+      - PostgreSQL
     environment:
        SPRING_DATASOURCE_URL: jdbc:postgresql://PostgreSQL:5432/fitness_db?useUnicode=true&serverTimezone=UTC
        SPRING_DATASOURCE_USERNAME: postgres
@@ -51,11 +49,6 @@ services:
       - POSTGRES_PASSWORD=qwerty
       - POSTGRES_USER=postgres
       - POSTGRES_DB=fitness_db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - backend
 
@@ -74,11 +67,6 @@ services:
         hard: -1
     volumes:
       - es-data01:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"\\|\"status\":\"yellow\"'"]
-      interval: 2s
-      timeout: 30s
-      retries: 15
     ports:
       - 9200:9200
     networks:
