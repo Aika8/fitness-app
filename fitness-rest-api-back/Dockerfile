@@ -1,5 +1,13 @@
-FROM openjdk:15
-ADD target/fitness-app.jar fitness-app.jar
-ENTRYPOINT ["java", "-jar","fitness-app.jar"]
-EXPOSE 8080
-CMD ["java", "-jar", "fitness-app.jar"]
+FROM openjdk:15-alpine
+
+WORKDIR /app
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+
+EXPOSE 80
+
+CMD ["./mvnw", "spring-boot:run"]

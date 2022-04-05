@@ -1,5 +1,7 @@
 package spring.first.fitness.config;
 
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +23,7 @@ public class ElasticConfig extends AbstractElasticsearchConfiguration {
     @Bean
     @Override
     public RestHighLevelClient elasticsearchClient() {
-        final ClientConfiguration config = ClientConfiguration.builder()
-                .connectedTo(elasticsearchUrl)
-                .build();
-
-        return RestClients.create(config).rest();
+        return new RestHighLevelClient(RestClient.builder(HttpHost.create(elasticsearchUrl)));
     }
 
 }

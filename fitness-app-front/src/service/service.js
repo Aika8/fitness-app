@@ -5,9 +5,14 @@ import axios from 'axios';
 //   baseURL: "https://fitness-rest-api-back.herokuapp.com"
 // });
 
+
 const axiosInstanse  = axios.create({
-  baseURL: "http://localhost:8080"
+  baseURL: "https://mariaplume.azurewebsites.net:6379"
 });
+
+// const axiosInstanse  = axios.create({
+//   baseURL: "http://app-server"
+// });
 
 
 export const getAllPosts = async() => {

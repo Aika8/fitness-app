@@ -1,14 +1,14 @@
 version: '3.4'
 services:
   app-server:
-    image: fitness-app_app-server:latest
+    image: mariaplume.azurecr.io/fitness-app_app-server:latest
     container_name: app-server
     build:
       context: fitness-rest-api-back # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "6379:6379"
-    restart: always
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -27,15 +27,14 @@ services:
 
   # Frontend Service
   app-client:
-    image: fitness-app_app-client:latest
+    image: mariaplume.azurecr.io/fitness-app_app-client:latest
     container_name: app-client
     build:
       context: fitness-app-front # Use an image built from the specified dockerfile in the `polling-app-client` directory.
       dockerfile: Dockerfile
     ports:
-      - 9090:80 # Map the exposed port 80 on the container to port 9090 on the host machine
+      - "8080:80"
     restart: always
-    stdin_open: true
     depends_on:
       - app-server
     networks:
@@ -43,7 +42,7 @@ services:
     command: npm start
 
   PostgreSQL:
-    image: postgres:latest
+    image: mariaplume.azurecr.io/postgres:latest
     ports:
       - "5432:5432"
     restart: always
@@ -51,34 +50,23 @@ services:
       - POSTGRES_PASSWORD=qwerty
       - POSTGRES_USER=postgres
       - POSTGRES_DB=fitness_db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - backend
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    image: mariaplume.azurecr.io/docker.elastic.co/elasticsearch/elasticsearch:7.6.1
     container_name: elasticsearch
     environment:
       - node.name=elasticsearch
       - cluster.name=es-cluster-7
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
-      - network.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - es-data01:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"\\|\"status\":\"yellow\"'"]
-      interval: 2s
-      timeout: 30s
-      retries: 15
     ports:
       - 9200:9200
     networks:
