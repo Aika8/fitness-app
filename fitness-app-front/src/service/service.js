@@ -7,12 +7,8 @@ import axios from 'axios';
 
 
 const axiosInstanse  = axios.create({
-  baseURL: "http://20.112.8.98:6379"
+  baseURL: "http://localhost:8080"
 });
-
-// const axiosInstanse  = axios.create({
-//   baseURL: "http://app-server"
-// });
 
 
 export const getAllPosts = async() => {
