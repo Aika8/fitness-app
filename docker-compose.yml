@@ -7,7 +7,7 @@ services:
       context: fitness-rest-api-back # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
     ports:
-      - "6379:6969"
+      - "6379:6379"
     restart: always
     depends_on:
       - elasticsearch

@@ -7,7 +7,7 @@ import axios from 'axios';
 
 
 const axiosInstanse  = axios.create({
-  baseURL: "https://mariaplume.azurewebsites.net:6379"
+  baseURL: "http://20.112.8.98:6379"
 });
 
 // const axiosInstanse  = axios.create({
