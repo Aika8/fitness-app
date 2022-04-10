@@ -36,6 +36,7 @@ public class PostServiceImpl implements PostService {
 
     private final Lock saveLock = new ReentrantLock(true);
     private final Lock deleteLock = new ReentrantLock(true);
+    private static final String ID_NOT_FOUND = "No records with such an id: ";
 
     @Override
     public PostDTO savePost(PostDTO post) {
@@ -51,6 +52,7 @@ public class PostServiceImpl implements PostService {
                     .users(post.getUsers())
                     .build();
             post1 = postRepository.save(post1);
+            log.info("Post id: {}", post1);
 
             ElasticPost elPost = ElasticPost.builder()
                     .postId(post1.getId())
@@ -82,7 +84,7 @@ public class PostServiceImpl implements PostService {
             Page<ElasticPost> postModels = elasticPostRepository.search(query);
             dto = postModels.map(entity -> {
                 Post post1 = postRepository.findById(entity.getPostId())
-                        .orElseThrow(() -> new NoSuchElementException("No records with such an id: " + entity.getPostId()));
+                        .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + entity.getPostId()));
                 return PostDTO.builder()
                         .id(post1.getId())
                         .access(post1.getAccess())
@@ -98,8 +100,9 @@ public class PostServiceImpl implements PostService {
 
         } else {
             dto = postRepository.findAllByOrderByPriorityAsc(pageable).map(post1 -> {
-                ElasticPost entity = elasticPostRepository.findById(post1.getId())
-                        .orElseThrow(() -> new NoSuchElementException("No records with such an id: " + post1.getId()));
+                log.info("Found post: {}", post1);
+                ElasticPost entity = elasticPostRepository.findByPostId(post1.getId())
+                        .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + post1.getId()));
                 return PostDTO.builder()
                         .id(post1.getId())
                         .access(post1.getAccess())
@@ -128,10 +131,10 @@ public class PostServiceImpl implements PostService {
     public PostDTO getPost(Long id) {
         AtomicReference<PostDTO> dto = new AtomicReference<>();
         Post post1 = postRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No records with such an id: " + id));
+                .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
 
-        ElasticPost elPost = elasticPostRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No records with such an id: " + id));
+        ElasticPost elPost = elasticPostRepository.findByPostId(id)
+                .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
         dto.set(PostDTO.builder()
                 .id(post1.getId())
                 .access(post1.getAccess())
