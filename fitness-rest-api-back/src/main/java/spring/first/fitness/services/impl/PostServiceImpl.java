@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
         Page<PostDTO> dto;
         if (filter != null && !filter.isEmpty()) {
             log.info("Filter: {}", filter);
-            NativeSearchQueryBuilder nativeSearchQueryBuilder = ElasticHelper.nativeQueryBuilder(filter, pageable, getIndex());
+            NativeSearchQueryBuilder nativeSearchQueryBuilder = ElasticHelper.nativeQueryBuilder(filter, pageable);
             NativeSearchQuery query = nativeSearchQueryBuilder.build();
             log.info("Query: {}", query.getQuery());
 

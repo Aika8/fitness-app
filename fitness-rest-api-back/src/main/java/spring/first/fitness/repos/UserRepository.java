@@ -6,9 +6,12 @@ import org.springframework.stereotype.Repository;
 import spring.first.fitness.entity.Users;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface UserRepository extends JpaRepository<Users, Long> {
-    Users findByEmail(String email);
+    Optional<Users> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }

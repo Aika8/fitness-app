@@ -21,12 +21,11 @@ public class ElasticHelper {
     }
 
     public static NativeSearchQueryBuilder nativeQueryBuilder(Map<String, Object> filter,
-                                                              Pageable pageable,
-                                                              String idxName) {
+                                                              Pageable pageable) {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        applyFilterMap(filter, boolQueryBuilder, idxName);
+        applyFilterMap(filter, boolQueryBuilder);
         applyPageable(pageable, queryBuilder);
 
         queryBuilder.withQuery(boolQueryBuilder);
@@ -34,7 +33,7 @@ public class ElasticHelper {
     }
 
 
-    public static void applyFilterMap(Map<String, Object> filter, BoolQueryBuilder boolQueryBuilder, String idxName) {
+    public static void applyFilterMap(Map<String, Object> filter, BoolQueryBuilder boolQueryBuilder) {
             LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) filter;
             float i = filter.size();
             for (Map.Entry<String, Object> entry : map.entrySet()) {

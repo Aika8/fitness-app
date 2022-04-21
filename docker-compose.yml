@@ -4,7 +4,7 @@ services:
     image: fitness-app_app-server:latest
     container_name: app-server
     build:
-      context: fitness-rest-api-back # Use an image built from the specified dockerfile in the `polling-app-server` directory.
+      context: fitness-rest-api-back
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
