@@ -2,10 +2,10 @@ import React from "react";
 import Navbar from "../navbar";
 import Posts from './posts';
 import "./home.css";
-const Home = () => {
+const Home = (props) => {
     return (
         <div>
-            <Navbar/>
+            <Navbar authenticated={props.authenticated} onLogout={props.onLogout}/>
             <section className="motivation">
                 <div>
                     <h2>Тренировки не самоцель.</h2>

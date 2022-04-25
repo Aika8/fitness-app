@@ -1,7 +1,8 @@
 import React from 'react';
 import banner from './banner.png';
 import './navbar.css';
-const Navbar = () => {
+import { Link, NavLink } from 'react-router-dom';
+const Navbar = (props) => {
     return (
         <header>
         <nav className="navbar navbar-expand-lg navbar-dark">
@@ -21,9 +22,15 @@ const Navbar = () => {
               <li className="nav-item">
                 <a className="nav-link" href="#">Posts</a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link">Login</a>
-              </li>
+                { props.authenticated ? (
+                        <li className="nav-item">
+                            <a onClick={props.onLogout}>Logout</a>
+                        </li>
+                ): (
+                        <li className="nav-item">
+                            <NavLink to="/login">Login</NavLink>
+                        </li>
+                )}
             </ul>
           </div>
         </div>
