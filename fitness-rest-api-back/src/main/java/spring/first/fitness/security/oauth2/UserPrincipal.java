@@ -33,19 +33,8 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     public static UserPrincipal create(Users user) {
 
-        Role role = roleRepository.findByName("ROLE_USER");
-
-        if (role == null) {
-            role = Role.builder()
-                    .description("registered user")
-                    .name("ROLE_USER")
-                    .title("registered user")
-                    .weight(2)
-                    .build();
-        }
-
         List<GrantedAuthority> authorities = Collections.
-                singletonList(role);
+                singletonList(user.getRole());
 
         return new UserPrincipal(
                 user.getId(),

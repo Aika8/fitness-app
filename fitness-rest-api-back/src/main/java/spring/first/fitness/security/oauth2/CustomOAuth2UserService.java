@@ -1,6 +1,7 @@
 package spring.first.fitness.security.oauth2;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -22,6 +23,7 @@ import spring.first.fitness.security.oauth2.user.OAuth2UserInfoFactory;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
@@ -80,12 +82,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
         }
 
+        Role newRole = roleRepository.save(role);
+        log.info("role: ", newRole);
+
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         user.setProviderId(oAuth2UserInfo.getId());
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
-        user.setRole(role);
+        user.setRole(newRole);
         return userRepository.save(user);
     }
 

@@ -33,6 +33,14 @@ public final class CookieUtils {
         response.addCookie(cookie);
     }
 
+    public static void addNotSecureCookie(HttpServletResponse response, String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setHttpOnly(false);
+        cookie.setMaxAge(maxAge);
+        response.addCookie(cookie);
+    }
+
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length > 0) {

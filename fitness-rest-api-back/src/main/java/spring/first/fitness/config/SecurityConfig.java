@@ -4,7 +4,9 @@ package spring.first.fitness.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,10 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import spring.first.fitness.security.oauth2.CustomOAuth2UserService;
-import spring.first.fitness.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import spring.first.fitness.security.oauth2.OAuth2AuthenticationFailureHandler;
-import spring.first.fitness.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import spring.first.fitness.security.oauth2.*;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +25,9 @@ import spring.first.fitness.security.oauth2.OAuth2AuthenticationSuccessHandler;
         prePostEnabled = true
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
@@ -38,6 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter();
+    }
 
     /*
       By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
@@ -49,6 +56,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder());
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,38 +69,48 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
-                    .and()
+                        .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .and()
                 .csrf()
-                    .disable()
+                        .disable()
                 .formLogin()
-                    .disable()
+                        .disable()
                 .httpBasic()
-                    .disable()
+                        .disable()
+                .exceptionHandling()
+                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                        .and()
                 .authorizeRequests()
-                    .antMatchers("/auth/**", "/oauth2/**")
-                        .permitAll()
                     .anyRequest()
-                        .authenticated()
+                        .permitAll()
                     .and()
                 .oauth2Login()
                     .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
                         .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                         .and()
-                    .redirectionEndpoint()
+                .redirectionEndpoint()
                         .baseUri("/oauth2/callback/*")
                         .and()
-                    .userInfoEndpoint()
+                .userInfoEndpoint()
                         .userService(customOAuth2UserService)
                         .and()
-                    .successHandler(oAuth2AuthenticationSuccessHandler)
-                    .failureHandler(oAuth2AuthenticationFailureHandler);
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler);
+
+        // Add our custom Token based authentication filter
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
