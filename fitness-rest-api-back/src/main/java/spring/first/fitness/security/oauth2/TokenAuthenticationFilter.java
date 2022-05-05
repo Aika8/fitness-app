@@ -39,6 +39,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                log.info("did not set");
             }
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex);

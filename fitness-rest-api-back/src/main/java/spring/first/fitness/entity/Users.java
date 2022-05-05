@@ -29,7 +29,7 @@ public class Users {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 
     private String imageUrl;

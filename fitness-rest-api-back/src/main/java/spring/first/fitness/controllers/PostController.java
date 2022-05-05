@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.services.PostService;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -50,6 +51,13 @@ public class PostController {
     @ApiOperation(value = "Delete post by id")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         postService.deletePost(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/initialData")
+    @ApiOperation(value = "Upload initial data to posts")
+    public ResponseEntity<?> importPosts() throws IOException {
+        postService.importPosts();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

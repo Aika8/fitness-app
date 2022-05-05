@@ -36,6 +36,7 @@ public class Post {
     private LocalDateTime dateOfCreation;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "likes")
     private Set<Users> users;
 
 }

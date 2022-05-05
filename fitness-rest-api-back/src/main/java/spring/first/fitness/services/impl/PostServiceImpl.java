@@ -1,25 +1,39 @@
 package spring.first.fitness.services.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.entity.ElasticPost;
 import spring.first.fitness.entity.Post;
+import spring.first.fitness.entity.Users;
+import spring.first.fitness.exceptions.AccessDeniedException;
+import spring.first.fitness.exceptions.BadRequestException;
 import spring.first.fitness.helpers.ElasticConstants;
 import spring.first.fitness.helpers.ElasticHelper;
 import spring.first.fitness.repos.ElasticPostRepository;
 import spring.first.fitness.repos.PostRepository;
+import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.services.PostService;
 
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,6 +44,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ElasticPostRepository elasticPostRepository;
@@ -94,7 +111,6 @@ public class PostServiceImpl implements PostService {
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
                         .title(entity.getTitle())
-                        .description(entity.getDescription())
                         .build();
             });
 
@@ -112,7 +128,6 @@ public class PostServiceImpl implements PostService {
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
                         .title(entity.getTitle())
-                        .description(entity.getDescription())
                         .build();
             });
         }
@@ -130,25 +145,46 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO getPost(Long id) {
         AtomicReference<PostDTO> dto = new AtomicReference<>();
+        boolean isAvailable;
         Post post1 = postRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
 
-        ElasticPost elPost = elasticPostRepository.findByPostId(id)
-                .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
-        dto.set(PostDTO.builder()
-                .id(post1.getId())
-                .access(post1.getAccess())
-                .cover(post1.getCover())
-                .priority(post1.getPriority())
-                .dateOfCreation(post1.getDateOfCreation())
-                .users(post1.getUsers())
-                .brief(elPost.getBrief())
-                .title(elPost.getTitle())
-                .description(elPost.getDescription())
-                .build());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("data: " + dto.get());
-        return dto.get();
+        if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+            log.info(String.valueOf(auth.getPrincipal()));
+            Optional<Users> user = userRepository.findByEmail(auth.getName());
+
+            isAvailable = user.map(users -> {
+                Integer weight = user.get().getRole().getWeight();
+                return weight == 0 || weight >= post1.getAccess();
+            }).orElseThrow(() -> new NoSuchElementException("not found user with username " + auth.getName()));
+
+        } else {
+            isAvailable = post1.getAccess() == 1;
+        }
+
+        log.info(String.valueOf(isAvailable));
+
+        if (isAvailable) {
+            ElasticPost elPost = elasticPostRepository.findByPostId(id)
+                    .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
+            dto.set(PostDTO.builder()
+                    .id(post1.getId())
+                    .access(post1.getAccess())
+                    .cover(post1.getCover())
+                    .priority(post1.getPriority())
+                    .dateOfCreation(post1.getDateOfCreation())
+                    .users(post1.getUsers())
+                    .brief(elPost.getBrief())
+                    .title(elPost.getTitle())
+                    .description(elPost.getDescription())
+                    .build());
+
+            return dto.get();
+        }
+
+        throw new AccessDeniedException("access denied");
     }
 
     @Override
@@ -160,5 +196,31 @@ public class PostServiceImpl implements PostService {
         } finally {
             deleteLock.unlock();
         }
+    }
+
+    @Override
+    public void importPosts() throws IOException {
+        if(!postRepository.findAll().isEmpty()) {
+            throw new BadRequestException("database is not empty");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        InputStream stream = PostServiceImpl.class.getResourceAsStream("/post.json");
+        String jsonTextElastic = IOUtils.toString(
+                stream,
+                String.valueOf(StandardCharsets.UTF_8));
+        InputStream postStream = PostServiceImpl.class.getResourceAsStream("/post1.json");
+        String jsonText = IOUtils.toString(
+                postStream,
+                String.valueOf(StandardCharsets.UTF_8));
+        List<Post> posts = objectMapper.readValue(jsonText, TypeFactory.defaultInstance().constructCollectionType(ArrayList.class, Post.class));
+        List<ElasticPost> elasticPosts = objectMapper.readValue(jsonTextElastic, TypeFactory.defaultInstance().constructCollectionType(ArrayList.class, ElasticPost.class));
+
+        if (!posts.isEmpty()) postRepository.saveAll(posts);
+        for (int i = 0; i < posts.size(); i++){
+            elasticPosts.get(i).setPostId(posts.get(i).getId());
+        }
+        if (!elasticPosts.isEmpty()) elasticPostRepository.saveAll(elasticPosts);
+
     }
 }

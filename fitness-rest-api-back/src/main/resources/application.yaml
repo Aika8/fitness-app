@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/fitness_db?useUnicode=true&serverTimezone=UTC
+    url: jdbc:postgresql://localhost:7000/fitness_db?useUnicode=true&serverTimezone=UTC
     username: postgres
     password: qwerty
     driver-class-name: org.postgresql.Driver

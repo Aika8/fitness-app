@@ -43,12 +43,17 @@ services:
   PostgreSQL:
     image: postgres:latest
     ports:
-      - "5432:5432"
-    restart: always
+      - "7000:5432"
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=qwerty
       - POSTGRES_USER=postgres
       - POSTGRES_DB=fitness_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    volumes:
+      - .:/var/lib/postgresql/data
     networks:
       - backend
 
