@@ -1,14 +1,18 @@
 package spring.first.fitness.services.impl;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import spring.first.fitness.entity.Role;
 import spring.first.fitness.repos.RoleRepository;
 import spring.first.fitness.services.RoleService;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -22,7 +26,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRole(Long id) {
-        return roleRepository.findById(id).orElse(null);
+
+        Role role = roleRepository.findById(id).orElse(null);
+        if (role != null) {
+            log.info("role: " + role.getName());
+        }
+
+        return role;
     }
 
     @Override
@@ -32,6 +42,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        List<Role> roles = roleRepository.findAllByOrderByWeight();
+        log.info("count of roles:" + roles.size());
+        return roles;
     }
 }

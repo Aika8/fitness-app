@@ -12,12 +12,14 @@ import spring.first.fitness.dto.PasswordDTO;
 import spring.first.fitness.dto.UserDTO;
 import spring.first.fitness.entity.Role;
 import spring.first.fitness.entity.Users;
+import spring.first.fitness.exceptions.AccessDeniedException;
 import spring.first.fitness.exceptions.BadRequestException;
 import spring.first.fitness.repos.RoleRepository;
 import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.security.oauth2.UserPrincipal;
 import spring.first.fitness.services.UserService;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +95,7 @@ public class UserServiceImpl implements UserService {
                     .title("registered user")
                     .weight(2)
                     .build();
+            roleRepository.save(role);
         }
 
         return role;
@@ -126,6 +129,30 @@ public class UserServiceImpl implements UserService {
         }
 
         return new PageImpl<>(dtoList);
+    }
+
+    @Override
+    public void becomeAdmin(UserPrincipal userPrincipal) {
+        Users user = userRepository.findByEmail(userPrincipal.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, userPrincipal.getEmail()));
+
+        if (!user.getEmail().equals("aigerimt922@gmail.com") && !user.getEmail().equals("ertaevamanbai40@gmail.com")) {
+            throw new AccessDeniedException("you cannot be admin");
+        }
+
+        Role role = roleRepository.findByName("ROLE_ADMIN");
+        if (role == null) {
+            role = Role.builder()
+                    .description("main user")
+                    .name("ROLE_ADMIN")
+                    .title("admin")
+                    .weight(0)
+                    .build();
+            roleRepository.save(role);
+        }
+
+        user.setRole(role);
+        userRepository.save(user);
     }
 
 }

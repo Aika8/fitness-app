@@ -10,10 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spring.first.fitness.dto.PasswordDTO;
 import spring.first.fitness.dto.UserDTO;
-import spring.first.fitness.security.oauth2.UserPrincipal;
-import spring.first.fitness.security.oauth2.user.CurrentUser;
 import spring.first.fitness.services.UserService;
 
 @Slf4j
@@ -25,11 +22,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("/me")
-    public UserDTO getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-        return userService.getCurrentUser(userPrincipal);
-    }
 
     @DeleteMapping(value = "/{id}")
     @ApiOperation(value = "Delete user by id")
@@ -56,12 +48,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
-    @PostMapping(value = "/password")
-    @ApiOperation(value = "Update password")
-    public ResponseEntity<?> updatePassword(@CurrentUser UserPrincipal userPrincipal, PasswordDTO passwordDTO) {
-        userService.updatePassword(userPrincipal, passwordDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @GetMapping(value = "/all")
     @ApiOperation(value = "Get users")

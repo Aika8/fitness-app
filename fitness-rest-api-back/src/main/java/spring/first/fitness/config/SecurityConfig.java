@@ -56,6 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
+    private static final String[] AUTH_WHITELIST = {
+
+            // -- swagger ui
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"};
+
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
@@ -93,8 +101,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                         .and()
                 .authorizeRequests()
-                    .anyRequest()
-                        .permitAll()
+                .antMatchers("/api/user/**")
+                    .access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/role/**")
+                    .access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/api/post/**").permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                     .and()
                 .oauth2Login()
                     .authorizationEndpoint()

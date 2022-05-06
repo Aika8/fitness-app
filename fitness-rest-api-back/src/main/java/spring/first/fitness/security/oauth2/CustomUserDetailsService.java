@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public UserDetails loadUserById(Long id) {
-        Users user = userRepository.findById(id).orElseThrow(
+        Users user = userRepository.findByUserId(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)
         );
 

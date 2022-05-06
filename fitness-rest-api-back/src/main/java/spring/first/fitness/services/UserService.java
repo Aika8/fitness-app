@@ -23,4 +23,6 @@ public interface UserService {
 
     Page<UserDTO> getAllUsers(Pageable pageable);
 
+    void becomeAdmin(UserPrincipal userPrincipal);
+
 }

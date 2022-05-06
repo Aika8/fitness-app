@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.entity.ElasticPost;
 import spring.first.fitness.entity.Post;
@@ -56,6 +57,7 @@ public class PostServiceImpl implements PostService {
     private static final String ID_NOT_FOUND = "No records with such an id: ";
 
     @Override
+    @Transactional
     public PostDTO savePost(PostDTO post) {
         saveLock.lock();
         try {
@@ -90,6 +92,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Page<PostDTO> getAllPosts(Map<String, Object> filter, Pageable pageable) {
         Page<PostDTO> dto;
         if (filter != null && !filter.isEmpty()) {
@@ -143,6 +146,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
+    @Transactional
     public PostDTO getPost(Long id) {
         AtomicReference<PostDTO> dto = new AtomicReference<>();
         boolean isAvailable;
@@ -188,6 +192,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(Long id) {
         deleteLock.lock();
         try {
@@ -199,6 +204,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void importPosts() throws IOException {
         if(!postRepository.findAll().isEmpty()) {
             throw new BadRequestException("database is not empty");

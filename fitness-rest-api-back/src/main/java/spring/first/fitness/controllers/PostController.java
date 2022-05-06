@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.services.PostService;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.Map;
 
@@ -43,18 +44,21 @@ public class PostController {
 
     @PostMapping
     @ApiOperation(value = "Save post or if there id update post")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<PostDTO> save(@RequestBody PostDTO post) {
         return ResponseEntity.ok(postService.savePost(post));
     }
 
     @DeleteMapping(value = "/{id}")
     @ApiOperation(value = "Delete post by id")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         postService.deletePost(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/initialData")
+    @RolesAllowed("ROLE_ADMIN")
     @ApiOperation(value = "Upload initial data to posts")
     public ResponseEntity<?> importPosts() throws IOException {
         postService.importPosts();
