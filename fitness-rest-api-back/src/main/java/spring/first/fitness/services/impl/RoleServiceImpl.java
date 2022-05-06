@@ -7,6 +7,8 @@ import spring.first.fitness.entity.Role;
 import spring.first.fitness.repos.RoleRepository;
 import spring.first.fitness.services.RoleService;
 
+import java.util.List;
+
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -14,10 +16,9 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
-    public void addAndSaveRole(Role role) {
-        roleRepository.save(role);
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
     }
-
 
     @Override
     public Role getRole(Long id) {
@@ -27,5 +28,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteRole(Long id) {
         roleRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 }
