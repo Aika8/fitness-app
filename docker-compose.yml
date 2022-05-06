@@ -53,7 +53,7 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
     volumes:
-      - .:/var/lib/postgresql/data
+      - postgre-data01:/var/lib/postgresql/data
     networks:
       - backend
 
@@ -79,6 +79,8 @@ services:
 
 volumes:
   es-data01:
+    driver: local
+  postgre-data01:
     driver: local
 
 # Networks to be created to facilitate communication between containers

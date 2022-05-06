@@ -1,17 +1,26 @@
 package spring.first.fitness.services;
 
 
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import spring.first.fitness.entity.Users;
-//
-//public interface UserService extends UserDetailsService {
-//    Users getUserByEmail(String email);
-//
-//    Users createUser(Users user);
-//
-//    void addAndSaveUser(Users user);
-//
-//    Users getUser(Long id);
-//
-//    void deleteUser(Long id);
-//}
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import spring.first.fitness.dto.PasswordDTO;
+import spring.first.fitness.dto.UserDTO;
+import spring.first.fitness.security.oauth2.UserPrincipal;
+
+public interface UserService {
+
+    UserDTO getUserByEmail(String email);
+
+    UserDTO updateUser(UserDTO user);
+
+    UserDTO getUser(Long id);
+
+    void deleteUser(Long id);
+
+    void updatePassword(UserPrincipal userPrincipal, PasswordDTO passwordDTO);
+
+    UserDTO getCurrentUser(UserPrincipal userPrincipal);
+
+    Page<UserDTO> getAllUsers(Pageable pageable);
+
+}
