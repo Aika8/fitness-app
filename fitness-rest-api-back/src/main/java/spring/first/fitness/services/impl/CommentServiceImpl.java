@@ -14,6 +14,7 @@ import spring.first.fitness.repos.CommentRepository;
 import spring.first.fitness.repos.PostRepository;
 import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.services.CommentService;
+import spring.first.fitness.util.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
             responses.add(CommentResponse.builder()
                     .id(comment.getId())
                     .userEmail(comment.getUser().getEmail())
-                    .creationDate(comment.getCreationDate())
+                    .creationDate(DateUtil.formatDateTime(comment.getCreationDate()))
                     .message(comment.getMessage())
                     .build());
         }

@@ -9,11 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import spring.first.fitness.entity.Users;
 import spring.first.fitness.payload.CommentResponse;
 import spring.first.fitness.util.DateUtil;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -27,10 +25,7 @@ public class PostDTO {
     private String cover;
     private Integer access;
     private Integer priority;
-    @JsonFormat(pattern = DateUtil.DEFAULT_DATE_PATTERN)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime dateOfCreation;
+    private String dateOfCreation;
     private Set<LikeUserDTO> users;
     private String title;
     private String brief;

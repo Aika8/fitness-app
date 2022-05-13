@@ -29,6 +29,7 @@ import spring.first.fitness.repos.PostRepository;
 import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.services.CommentService;
 import spring.first.fitness.services.PostService;
+import spring.first.fitness.util.DateUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class PostServiceImpl implements PostService {
                     .access(post.getAccess())
                     .cover(post.getCover())
                     .priority(post.getPriority())
-                    .dateOfCreation(post.getDateOfCreation() != null ? post.getDateOfCreation() : LocalDateTime.now())
+                    .dateOfCreation(post.getDateOfCreation() != null ? DateUtil.toDate(post.getDateOfCreation()) : LocalDateTime.now())
                     .build();
             post1 = postRepository.save(post1);
             log.info("Post id: {}", post1);
@@ -112,7 +113,7 @@ public class PostServiceImpl implements PostService {
                         .id(post1.getId())
                         .access(post1.getAccess())
                         .cover(post1.getCover())
-                        .dateOfCreation(post1.getDateOfCreation())
+                        .dateOfCreation(DateUtil.formatDateTime(post1.getDateOfCreation()))
                         .users(getlikeUsers(post1.getUsers()))
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
@@ -129,7 +130,7 @@ public class PostServiceImpl implements PostService {
                         .id(post1.getId())
                         .access(post1.getAccess())
                         .cover(post1.getCover())
-                        .dateOfCreation(post1.getDateOfCreation())
+                        .dateOfCreation(DateUtil.formatDateTime(post1.getDateOfCreation()))
                         .users(getlikeUsers(post1.getUsers()))
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
@@ -182,7 +183,7 @@ public class PostServiceImpl implements PostService {
                     .access(post1.getAccess())
                     .cover(post1.getCover())
                     .priority(post1.getPriority())
-                    .dateOfCreation(post1.getDateOfCreation())
+                    .dateOfCreation(DateUtil.formatDateTime(post1.getDateOfCreation()))
                     .users(getlikeUsers(post1.getUsers()))
                     .brief(elPost.getBrief())
                     .title(elPost.getTitle())
