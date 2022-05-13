@@ -11,10 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.first.fitness.dto.PostDTO;
+import spring.first.fitness.payload.CommentRequest;
+import spring.first.fitness.payload.CommentResponse;
+import spring.first.fitness.security.oauth2.UserPrincipal;
+import spring.first.fitness.security.oauth2.user.CurrentUser;
+import spring.first.fitness.services.CommentService;
 import spring.first.fitness.services.PostService;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -62,6 +68,13 @@ public class PostController {
     @ApiOperation(value = "Upload initial data to posts")
     public ResponseEntity<?> importPosts() throws IOException {
         postService.importPosts();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/like")
+    @ApiOperation(value = "Put like or remove like")
+    public ResponseEntity<?> like(@RequestParam Long postId, @CurrentUser UserPrincipal userPrincipal) throws IOException {
+        postService.like(postId, userPrincipal.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

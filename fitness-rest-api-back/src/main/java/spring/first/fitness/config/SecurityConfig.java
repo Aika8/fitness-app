@@ -107,6 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/api/post/**").permitAll()
+                .antMatchers("/api/comment/**").authenticated()
                 .antMatchers(AUTH_WHITELIST).permitAll()
                     .and()
                 .oauth2Login()

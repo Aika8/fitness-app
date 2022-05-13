@@ -1,7 +1,6 @@
 package spring.first.fitness.services.impl;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -13,22 +12,23 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import spring.first.fitness.dto.LikeUserDTO;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.entity.ElasticPost;
 import spring.first.fitness.entity.Post;
 import spring.first.fitness.entity.Users;
 import spring.first.fitness.exceptions.AccessDeniedException;
 import spring.first.fitness.exceptions.BadRequestException;
+import spring.first.fitness.exceptions.NotFoundException;
 import spring.first.fitness.helpers.ElasticConstants;
 import spring.first.fitness.helpers.ElasticHelper;
 import spring.first.fitness.repos.ElasticPostRepository;
 import spring.first.fitness.repos.PostRepository;
 import spring.first.fitness.repos.UserRepository;
+import spring.first.fitness.services.CommentService;
 import spring.first.fitness.services.PostService;
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,6 +49,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentService commentService;
 
     @Autowired
     private ElasticPostRepository elasticPostRepository;
@@ -68,7 +72,6 @@ public class PostServiceImpl implements PostService {
                     .cover(post.getCover())
                     .priority(post.getPriority())
                     .dateOfCreation(post.getDateOfCreation() != null ? post.getDateOfCreation() : LocalDateTime.now())
-                    .users(post.getUsers())
                     .build();
             post1 = postRepository.save(post1);
             log.info("Post id: {}", post1);
@@ -104,13 +107,13 @@ public class PostServiceImpl implements PostService {
             Page<ElasticPost> postModels = elasticPostRepository.search(query);
             dto = postModels.map(entity -> {
                 Post post1 = postRepository.findById(entity.getPostId())
-                        .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + entity.getPostId()));
+                        .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + entity.getPostId()));
                 return PostDTO.builder()
                         .id(post1.getId())
                         .access(post1.getAccess())
                         .cover(post1.getCover())
                         .dateOfCreation(post1.getDateOfCreation())
-                        .users(post1.getUsers())
+                        .users(getlikeUsers(post1.getUsers()))
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
                         .title(entity.getTitle())
@@ -121,13 +124,13 @@ public class PostServiceImpl implements PostService {
             dto = postRepository.findAllByOrderByPriorityAsc(pageable).map(post1 -> {
                 log.info("Found post: {}", post1);
                 ElasticPost entity = elasticPostRepository.findByPostId(post1.getId())
-                        .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + post1.getId()));
+                        .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + post1.getId()));
                 return PostDTO.builder()
                         .id(post1.getId())
                         .access(post1.getAccess())
                         .cover(post1.getCover())
                         .dateOfCreation(post1.getDateOfCreation())
-                        .users(post1.getUsers())
+                        .users(getlikeUsers(post1.getUsers()))
                         .priority(post1.getPriority())
                         .brief(entity.getBrief())
                         .title(entity.getTitle())
@@ -151,7 +154,7 @@ public class PostServiceImpl implements PostService {
         AtomicReference<PostDTO> dto = new AtomicReference<>();
         boolean isAvailable;
         Post post1 = postRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
+                .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + id));
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -162,7 +165,7 @@ public class PostServiceImpl implements PostService {
             isAvailable = user.map(users -> {
                 Integer weight = user.get().getRole().getWeight();
                 return weight == 0 || weight >= post1.getAccess();
-            }).orElseThrow(() -> new NoSuchElementException("not found user with username " + auth.getName()));
+            }).orElseThrow(() -> new NotFoundException("not found user with username " + auth.getName()));
 
         } else {
             isAvailable = post1.getAccess() == 1;
@@ -172,23 +175,35 @@ public class PostServiceImpl implements PostService {
 
         if (isAvailable) {
             ElasticPost elPost = elasticPostRepository.findByPostId(id)
-                    .orElseThrow(() -> new NoSuchElementException(ID_NOT_FOUND + id));
+                    .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + id));
+
             dto.set(PostDTO.builder()
                     .id(post1.getId())
                     .access(post1.getAccess())
                     .cover(post1.getCover())
                     .priority(post1.getPriority())
                     .dateOfCreation(post1.getDateOfCreation())
-                    .users(post1.getUsers())
+                    .users(getlikeUsers(post1.getUsers()))
                     .brief(elPost.getBrief())
                     .title(elPost.getTitle())
                     .description(elPost.getDescription())
+                    .comments(commentService.readComment(post1.getId()))
                     .build());
 
             return dto.get();
         }
 
         throw new AccessDeniedException("access denied");
+    }
+
+    private Set<LikeUserDTO> getlikeUsers(Set<Users> users) {
+        Set<LikeUserDTO> likeDtos = new HashSet<>();
+        users.forEach(user -> likeDtos.add(LikeUserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .imageUrl(user.getImageUrl()).build()));
+
+        return likeDtos;
     }
 
     @Override
@@ -206,7 +221,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void importPosts() throws IOException {
-        if(!postRepository.findAll().isEmpty()) {
+        if (!postRepository.findAll().isEmpty()) {
             throw new BadRequestException("database is not empty");
         }
 
@@ -223,10 +238,29 @@ public class PostServiceImpl implements PostService {
         List<ElasticPost> elasticPosts = objectMapper.readValue(jsonTextElastic, TypeFactory.defaultInstance().constructCollectionType(ArrayList.class, ElasticPost.class));
 
         if (!posts.isEmpty()) postRepository.saveAll(posts);
-        for (int i = 0; i < posts.size(); i++){
+        for (int i = 0; i < posts.size(); i++) {
             elasticPosts.get(i).setPostId(posts.get(i).getId());
         }
         if (!elasticPosts.isEmpty()) elasticPostRepository.saveAll(elasticPosts);
 
     }
+
+    @Override
+    public void like(long postId, long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + postId));
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + userId));
+
+        Set<Users> users = post.getUsers();
+        if (users.contains(user)) {
+            users.remove(user);
+        } else {
+            users.add(user);
+        }
+
+        postRepository.save(post);
+    }
+
+
 }

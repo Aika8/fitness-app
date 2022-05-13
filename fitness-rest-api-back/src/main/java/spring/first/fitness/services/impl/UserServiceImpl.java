@@ -1,14 +1,15 @@
 package spring.first.fitness.services.impl;
 
 
-import org.elasticsearch.ResourceNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import spring.first.fitness.dto.PasswordDTO;
+import spring.first.fitness.exceptions.NotFoundException;
+import spring.first.fitness.payload.PasswordRequest;
 import spring.first.fitness.dto.UserDTO;
 import spring.first.fitness.entity.Role;
 import spring.first.fitness.entity.Users;
@@ -19,7 +20,6 @@ import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.security.oauth2.UserPrincipal;
 import spring.first.fitness.services.UserService;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUserByEmail(String email) {
         return getUserDto(userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, email)));
+                .orElseThrow(() -> new NotFoundException(EMAIL + email)));
 
     }
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO user) {
         Users checkUser = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, user.getEmail()));
+                .orElseThrow(() -> new NotFoundException(EMAIL + user.getEmail()));
 
         checkUser.setRole(Optional.of(user.getRole()).orElse(getUserRole()));
         checkUser.setName(user.getName());
@@ -73,15 +73,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(UserPrincipal userPrincipal, PasswordDTO passwordDTO) {
+    public void updatePassword(UserPrincipal userPrincipal, PasswordRequest passwordRequest) {
         Users user = userRepository.findByEmail(userPrincipal.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, userPrincipal.getEmail()));
+                .orElseThrow(() -> new NotFoundException(EMAIL + userPrincipal.getEmail()));
 
-        if (!passwordEncoder.matches(user.getPassword(), passwordDTO.getCurrentPassword())) {
+        if (!passwordEncoder.matches(user.getPassword(), passwordRequest.getCurrentPassword())) {
             throw new BadRequestException("current password is wrong");
         }
 
-        user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         userRepository.save(user);
     }
 
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getCurrentUser(UserPrincipal userPrincipal) {
         return getUserDto(userRepository.findByEmail(userPrincipal.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, userPrincipal.getEmail())));
+                .orElseThrow(() -> new NotFoundException(EMAIL + userPrincipal.getEmail())));
     }
 
     @Override
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void becomeAdmin(UserPrincipal userPrincipal) {
         Users user = userRepository.findByEmail(userPrincipal.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(EMAIL, userPrincipal.getEmail()));
+                .orElseThrow(() -> new NotFoundException(EMAIL + userPrincipal.getEmail()));
 
         if (!user.getEmail().equals("aigerimt922@gmail.com") && !user.getEmail().equals("ertaevamanbai40@gmail.com")) {
             throw new AccessDeniedException("you cannot be admin");

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import spring.first.fitness.entity.Post;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional

@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import spring.first.fitness.dto.PasswordDTO;
+import spring.first.fitness.payload.PasswordRequest;
 import spring.first.fitness.dto.UserDTO;
 import spring.first.fitness.entity.AuthProvider;
 import spring.first.fitness.entity.Role;
@@ -119,11 +119,11 @@ public class AuthController {
 
     @PostMapping(value = "/password")
     @ApiOperation(value = "Update password")
-    public ResponseEntity<?> updatePassword(@CurrentUser UserPrincipal userPrincipal, PasswordDTO passwordDTO) {
+    public ResponseEntity<?> updatePassword(@CurrentUser UserPrincipal userPrincipal, PasswordRequest passwordRequest) {
         if (userPrincipal == null) {
             throw new AccessDeniedException(NOT_AUTH);
         }
-        userService.updatePassword(userPrincipal, passwordDTO);
+        userService.updatePassword(userPrincipal, passwordRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
