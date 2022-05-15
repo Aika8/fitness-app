@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import banner from './banner.png';
 import './navbar.css';
 import { Link, NavLink } from 'react-router-dom';
