@@ -199,11 +199,13 @@ public class PostServiceImpl implements PostService {
 
     private Set<LikeUserDTO> getlikeUsers(Set<Users> users) {
         Set<LikeUserDTO> likeDtos = new HashSet<>();
-        users.forEach(user -> likeDtos.add(LikeUserDTO.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .imageUrl(user.getImageUrl()).build()));
 
+        if (users != null) {
+            users.forEach(user -> likeDtos.add(LikeUserDTO.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .imageUrl(user.getImageUrl()).build()));
+        }
         return likeDtos;
     }
 
