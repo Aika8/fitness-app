@@ -17,8 +17,11 @@ import org.springframework.data.domain.Pageable;
 import spring.first.fitness.dto.PostDTO;
 import spring.first.fitness.entity.ElasticPost;
 import spring.first.fitness.entity.Post;
+import spring.first.fitness.exceptions.AccessDeniedException;
+import spring.first.fitness.payload.CommentResponse;
 import spring.first.fitness.repos.ElasticPostRepository;
 import spring.first.fitness.repos.PostRepository;
+import spring.first.fitness.services.CommentService;
 import spring.first.fitness.services.impl.PostServiceImpl;
 
 import java.util.ArrayList;
@@ -36,8 +39,11 @@ class PostServiceImplTest {
     @Mock
     ElasticPostRepository elasticPostRepository;
 
+    @Mock
+    CommentService commentService;
+
     @Test
-    void testFindAllEmployees() {
+    void testFindAllPosts() {
         List<Post> list = new ArrayList<>();
 
         list.add(Post.builder().build());
@@ -54,4 +60,30 @@ class PostServiceImplTest {
         verify(postRepository, times(1)).findAllByOrderByPriorityAsc(Pageable.unpaged());
     }
 
+    @Test
+    void testGetPostThrowsAccessDenied() {
+
+        when(postRepository.findById(any())).thenReturn(Optional.of(Post.builder().access(2).build()));
+
+        //test
+        Exception exception = Assertions.assertThrows(AccessDeniedException.class, () -> {
+            service.getPost(3L);
+        });
+        verify(elasticPostRepository, times(0)).findByPostId(3L);
+        Assertions.assertEquals("access denied", exception.getMessage());
+    }
+
+
+    @Test
+    void testGetPost() {
+        when(postRepository.findById(any())).thenReturn(Optional.of(Post.builder().id(3L).access(1).build()));
+        when(elasticPostRepository.findByPostId(any())).thenReturn(Optional.of(ElasticPost.builder().build()));
+
+        //test
+        PostDTO post = service.getPost(3L);
+
+        Assertions.assertEquals(1, post.getAccess());
+        verify(elasticPostRepository, times(1)).findByPostId(3L);
+        verify(postRepository, times(1)).findById(3L);
+    }
 }
