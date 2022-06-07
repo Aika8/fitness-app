@@ -1,28 +1,85 @@
 import React, {useEffect, useState } from "react";
 import './post.css';
-import {getPost} from "../../service/service";
+import {getPost, addComment} from "../../service/service";
 import {
     useParams
   } from "react-router-dom";
 const Post = () => {
     const { id } = useParams();
     const [post, setPost] = useState({});
-
+    const [comments, setComments] = useState([]);
+    const [likes, setLikes] = useState([]);
+    const [text, setText] = useState("");
     useEffect(()=>{
         getPost(id).then(res=>{
-            console.log(res.data);
             setPost(res.data);
+            setComments(res.data.comments);
+            setLikes(res.data.likes);
         }
             )
-    }, [id])
+    }, [id]);
+
+
+    const handleComment= e => {
+        e.preventDefault();
+        const comment = {
+            postId: post.id,
+            message: text
+        }
+        addComment(comment, localStorage.getItem("accessToken"))
+            .then(res=> {
+                if(res.status === 200) {
+                    setComments([...comments, res.data]);
+                }
+                setText("");
+            }
+            );
+    }
+
     return (
-        <div className="container">
-            <div className="post">
-                 <h2 className="">{post.title}</h2>
-                 <div dangerouslySetInnerHTML={{ __html: post.description }}>
-                 </div>
+        <section className="main_post">
+            <nav className="main_post_nav">
+            </nav>
+            <div className="container main_post_div">
+                <div className="post">
+                    <h1>{post.title}</h1>
+                    <div className="line"></div>
+                    <div dangerouslySetInnerHTML={{ __html: post.description }}>
+                    </div>
+                </div>
+                <div className="likes"></div>
             </div>
-        </div>
+            <div className="main_post_comments">
+                <div className="responses">
+                    <h4>Responses({comments.length})</h4>
+                    <form onSubmit={handleComment}>
+                        <input name="comment" type="text" placeholder="Что думаете?" class="form-control" 
+                    value={text} onChange={(e)=>setText(e.target.value)} />
+                    </form>
+                </div>
+                <div className="line"></div>
+                <div className="main_comments overflow-auto" style={{maxHeight:"100vh"}}> 
+                    {
+                        comments.map(e=>{
+                            return(
+                            <div key={e.id}>
+                                <div className="d-flex mt-2 mb-2">
+                                    <img src={e.userImg} tag="profile"/>
+                                    <div style={{marginLeft:"10px", marginTop:"-5px"}}>
+                                        <p>{e.userEmail}</p>
+                                        <p>{e.creationDate}</p>
+                                    </div>
+                                </div>
+                                <p>{e.message}</p>
+                            <div className="line"></div>
+                            </div>
+                            )
+                        })
+                    }
+                    
+                </div>
+            </div>
+        </section>
     )
 }
 

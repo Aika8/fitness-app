@@ -13,7 +13,7 @@ class Profile extends Component {
                     <div className="profile-info">
                         <div className="profile-avatar">
                             { 
-                                this.props.currentUser.imageUrl ? (
+                                this.props.currentUser.imageUrl !== null ? (
                                     <img src={this.props.currentUser.imageUrl} alt={this.props.currentUser.name}/>
                                 ) : (
                                     <div className="text-avatar">

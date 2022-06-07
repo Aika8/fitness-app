@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Route,
-    Redirect
+    Navigate 
   } from "react-router-dom";
   
   
@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
         authenticated ? (
           <Component {...rest} {...props} />
         ) : (
-          <Redirect
+          <Navigate 
             to={{
               pathname: '/login',
               state: { from: props.location }

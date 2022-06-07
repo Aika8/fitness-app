@@ -17,18 +17,24 @@ const Navbar = (props) => {
                 <a className="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">About</a>
+                <a className="nav-link" href="#motivation" >About</a>
               </li>
+              {
+                props.currentUser.role.name==="ROLE_ADMIN"?(
+                <li className="nav-item">
+                    <NavLink to="/admin" className="nav-link">Admin</NavLink>
+                </li>):""
+              }
               <li className="nav-item">
-                <a className="nav-link" href="#">Posts</a>
+                <a className="nav-link" href="#posts">Posts</a>
               </li>
                 { props.authenticated ? (
                         <li className="nav-item">
-                            <a onClick={props.onLogout}>Logout</a>
+                            <a className="nav-link" onClick={props.onLogout}>Logout</a>
                         </li>
                 ): (
                         <li className="nav-item">
-                            <NavLink to="/login">Login</NavLink>
+                            <NavLink to="/login" className="nav-link">Login</NavLink>
                         </li>
                 )}
             </ul>

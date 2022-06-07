@@ -5,8 +5,8 @@ import "./home.css";
 const Home = (props) => {
     return (
         <div>
-            <Navbar authenticated={props.authenticated} onLogout={props.onLogout}/>
-            <section className="motivation">
+            <Navbar authenticated={props.authenticated} onLogout={props.onLogout} currentUser={props.currentUser}/>
+            <section className="motivation" id="motivation">
                 <div>
                     <h2>Тренировки не самоцель.</h2>
                     <p>
@@ -15,6 +15,7 @@ const Home = (props) => {
                 </div>
             </section>
             <Posts/>
+           
         </div>
     )
 }

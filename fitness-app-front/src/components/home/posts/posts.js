@@ -2,16 +2,16 @@ import React, { useRef, useEffect, useState } from "react";
 import {getAllPosts} from '../../../service/service';
 import PostItem from "../post-item";
 import "./posts.css"; 
+
 const Posts = () => {
     const [posts, setPosts] = useState([]);
     useEffect(() => {
         getAllPosts().then(res=>{
-          console.log(res.data);
           setPosts(res.data.content);
         });
       },  []);
     return (
-    <section className="home-posts">
+    <section className="home-posts" id="posts">
         <h1>Posts</h1>
        <div className="home-block row">
           {

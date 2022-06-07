@@ -1,23 +1,35 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Navbar from "./navbar";
 import Nav from './nav';
+import { useNavigate  } from 'react-router-dom'
 
-import FroalaEditor from "./FroalaEditor.js";
+const Admin = ({currentUser}) => {
+    const navigate = useNavigate();
 
-const Admin = () => {
+    useEffect(()=>{
+        if(currentUser.role.name === "ROLE_USER") {
+            return navigate('/');            
+        }
+    });
+
     return (
+
+
         <div id="wrapper">
 
-        <Navbar/>
+        <Navbar />
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
-                <Nav/>
-                <FroalaEditor/>
-            <div/>
+                <Nav />
+                <div className="container">
+                    <h1>Hello Admin</h1>               
+                </div>
+
+            </div>
         </div>
-        </div>
-        </div>
+
+    </div>
     )
 }
 

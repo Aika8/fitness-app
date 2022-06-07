@@ -1,107 +1,73 @@
 import React from 'react';
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
     return (
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
+        <NavLink to="/admin" className="sidebar-brand d-flex align-items-center justify-content-center">
+
+            <div className="sidebar-brand-icon rotate-n-15">
+                <i className="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3"> Fitness-Admin</div>
-        </a>
+            <div className="sidebar-brand-text mx-3"> Fitness-Admin</div>
+        </NavLink>
+        
+        <hr className="sidebar-divider my-0"/>
 
-        <hr class="sidebar-divider my-0"/>
-
-        <li class="nav-item active">
-            <a class="nav-link" href="index.html">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
+        <li className="nav-item active">
+            <a className="nav-link" href="index.html">
+                <i className="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
 
-        <hr class="sidebar-divider"/>
+        <hr className="sidebar-divider"/>
 
-        <div class="sidebar-heading">
-            Interface
-        </div>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Components</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Custom Components:</h6>
-                    <a class="collapse-item" href="buttons.html">Buttons</a>
-                    <a class="collapse-item" href="cards.html">Cards</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                aria-expanded="true" aria-controls="collapseUtilities">
-                <i class="fas fa-fw fa-wrench"></i>
-                <span>Utilities</span>
-            </a>
-            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Custom Utilities:</h6>
-                    <a class="collapse-item" href="utilities-color.html">Colors</a>
-                    <a class="collapse-item" href="utilities-border.html">Borders</a>
-                    <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                    <a class="collapse-item" href="utilities-other.html">Other</a>
-                </div>
-            </div>
-        </li>
-
-        <hr class="sidebar-divider"/>
+        <hr className="sidebar-divider"/>
 
    
-        <div class="sidebar-heading">
+        <div className="sidebar-heading">
             Addons
         </div>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+        <li className="nav-item">
+            <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                 aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
+                <i className="fas fa-fw fa-folder"></i>
                 <span>Pages</span>
             </a>
-            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Login Screens:</h6>
-                    <a class="collapse-item" href="login.html">Login</a>
-                    <a class="collapse-item" href="register.html">Register</a>
-                    <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Other Pages:</h6>
-                    <a class="collapse-item" href="404.html">404 Page</a>
-                    <a class="collapse-item" href="blank.html">Blank Page</a>
+            <div id="collapsePages" className="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div className="bg-white py-2 collapse-inner rounded">
+                    <h6 className="collapse-header">Login Screens:</h6>
+                    <NavLink to="/admin/posts" className="collapse-item">Posts</NavLink>
+                    <a className="collapse-item" href="register.html">Register</a>
+                    <a className="collapse-item" href="forgot-password.html">Forgot Password</a>
+                    <div className="collapse-divider"></div>
+                    <h6 className="collapse-header">Other Pages:</h6>
+                    <a className="collapse-item" href="404.html">404 Page</a>
+                    <a className="collapse-item" href="blank.html">Blank Page</a>
                 </div>
             </div>
         </li>
 
         
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-chart-area"></i>
+        <li className="nav-item">
+            <a className="nav-link" href="charts.html">
+                <i className="fas fa-fw fa-chart-area"></i>
                 <span>Charts</span></a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="tables.html">
-                <i class="fas fa-fw fa-table"></i>
+        <li className="nav-item">
+            <a className="nav-link" href="tables.html">
+                <i className="fas fa-fw fa-table"></i>
                 <span>Tables</span></a>
         </li>
-        <hr class="sidebar-divider d-none d-md-block"/>
+        <hr className="sidebar-divider d-none d-md-block"/>
 
       
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        <div className="text-center d-none d-md-inline">
+            <button className="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
 
       
