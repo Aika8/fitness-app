@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     private static final String ID_NOT_FOUND = "No records with such an id: ";
 
     @Override
-    public void writeComment(CommentRequest commentRequest, long userId) {
+    public CommentResponse writeComment(CommentRequest commentRequest, long userId) {
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new NotFoundException(ID_NOT_FOUND + commentRequest.getPostId()));
         Users user = userRepository.findById(userId)
@@ -50,7 +50,14 @@ public class CommentServiceImpl implements CommentService {
                 .user(user)
                 .build();
 
-        commentRepository.save(comment);
+        Comment save = commentRepository.save(comment);
+
+        return CommentResponse.builder()
+            .id(save.getId())
+            .message(save.getMessage())
+            .creationDate(DateUtil.formatDateTime(comment.getCreationDate()))
+            .userEmail(save.getUser().getEmail())
+            .userImg(save.getUser().getImageUrl()).build();
     }
 
     @Override
@@ -63,6 +70,7 @@ public class CommentServiceImpl implements CommentService {
                     .userEmail(comment.getUser().getEmail())
                     .creationDate(DateUtil.formatDateTime(comment.getCreationDate()))
                     .message(comment.getMessage())
+                    .userImg(comment.getUser().getImageUrl())
                     .build());
         }
 

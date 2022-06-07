@@ -26,11 +26,10 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping(value = "/comment")
+    @PostMapping(value = "/")
     @ApiOperation(value = "Write comment")
     public ResponseEntity<?> writeComment(@CurrentUser UserPrincipal userPrincipal, @RequestBody CommentRequest commentRequest) throws IOException {
-        commentService.writeComment(commentRequest, userPrincipal.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(commentService.writeComment(commentRequest, userPrincipal.getId()));
     }
 
     @DeleteMapping(value = "/{id}")

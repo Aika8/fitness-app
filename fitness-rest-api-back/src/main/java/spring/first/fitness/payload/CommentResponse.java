@@ -15,4 +15,5 @@ public class CommentResponse {
     private String userEmail;
     private String message;
     private String creationDate;
+    private String userImg;
 }
