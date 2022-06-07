@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { API_BASE_URL} from '../components/constants';
 
 
 // const axiosInstanse  = axios.create({
@@ -8,7 +7,7 @@ import { API_BASE_URL} from '../components/constants';
 
 
 const axiosInstanse  = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: "http://51.116.236.19:8080"
 });
 
 
