@@ -1,5 +1,6 @@
 package spring.first.fitness.security.oauth2;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import static spring.first.fitness.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Component
+@Slf4j
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Autowired
@@ -27,7 +29,9 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
                 .map(Cookie::getValue)
                 .orElse(("/"));
 
-        CookieUtils.addNotSecureCookie(response, "error", exception.getLocalizedMessage(), 180);
+        log.info(exception.getLocalizedMessage());
+
+        CookieUtils.addNotSecureCookie(response, "error", exception.getLocalizedMessage().replace(" ", "_"), 180);
 
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
