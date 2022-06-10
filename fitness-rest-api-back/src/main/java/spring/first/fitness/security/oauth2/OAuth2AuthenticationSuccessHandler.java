@@ -1,5 +1,6 @@
 package spring.first.fitness.security.oauth2;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static spring.first.fitness.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Component
+@Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private TokenProvider tokenProvider;
@@ -73,6 +75,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private boolean isAuthorizedRedirectUri(String uri) {
+        log.info(uri);
         URI clientRedirectUri = URI.create(uri);
 
         return appProperties.getOauth2().getAuthorizedRedirectUris()
