@@ -33,6 +33,7 @@ const AdminUsers = () => {
         const {id, email, name, image} = e.target;
         
         saveUser({id:id.value, email:email.value, name:name.value, imageUrl: image.value}, localStorage.getItem("accessToken"));
+        
     }
     return (
         <div id="wrapper">

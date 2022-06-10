@@ -7,8 +7,8 @@ import axios from 'axios';
 
 
 const axiosInstanse  = axios.create({
-  // baseURL: "http://51.116.236.19:8080"
-  baseURL: "http://localhost:8080"
+  baseURL: "http://51.116.236.19:8080"
+  // baseURL: "http://localhost:8080"
 });
 
 
