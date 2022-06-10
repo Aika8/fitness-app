@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
         Users checkUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException(EMAIL + user.getEmail()));
 
-        checkUser.setRole(Optional.of(user.getRole()).orElse(getUserRole()));
         checkUser.setName(user.getName());
         checkUser.setImageUrl(user.getImageUrl());
         return getUserDto(userRepository.save(checkUser));

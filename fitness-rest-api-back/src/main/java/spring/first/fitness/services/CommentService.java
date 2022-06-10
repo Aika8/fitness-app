@@ -13,4 +13,6 @@ public interface CommentService {
     List<CommentResponse> readComment(long postId);
 
     void deleteComment(Long id, Long userId);
+
+    void deleteAllComment(Long postId);
 }

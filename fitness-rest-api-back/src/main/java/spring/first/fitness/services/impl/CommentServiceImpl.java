@@ -1,5 +1,9 @@
 package spring.first.fitness.services.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +19,6 @@ import spring.first.fitness.repos.PostRepository;
 import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.services.CommentService;
 import spring.first.fitness.util.DateUtil;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -89,5 +89,13 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public void deleteAllComment(Long postId) {
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        commentRepository.deleteAll(comments);
+    }
+
 
 }

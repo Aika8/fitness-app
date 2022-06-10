@@ -214,6 +214,7 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long id) {
         deleteLock.lock();
         try {
+            commentService.deleteAllComment(id);
             postRepository.deleteById(id);
             elasticPostRepository.deleteById(id);
         } finally {
