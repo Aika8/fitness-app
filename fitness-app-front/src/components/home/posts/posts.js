@@ -11,8 +11,8 @@ const Posts = () => {
         });
       },  []);
     return (
-    <section className="home-posts" id="posts">
-        <h1>Posts</h1>
+    <section className="home-posts pb-5" id="posts">
+        <h1>Посты</h1>
        <div className="home-block row">
           {
             posts.map(el => {

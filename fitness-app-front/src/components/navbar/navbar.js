@@ -14,27 +14,24 @@ const Navbar = (props) => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#motivation" >About</a>
+                <a className="nav-link active" aria-current="page" href="#">Главная</a>
               </li>
               {
                 props.currentUser.role.name==="ROLE_ADMIN"?(
                 <li className="nav-item">
-                    <NavLink to="/admin" className="nav-link">Admin</NavLink>
+                    <NavLink to="/admin" className="nav-link">Админка</NavLink>
                 </li>):""
               }
               <li className="nav-item">
-                <a className="nav-link" href="#posts">Posts</a>
+                <a className="nav-link" href="#posts">Посты</a>
               </li>
                 { props.authenticated ? (
                         <li className="nav-item">
-                            <a className="nav-link" onClick={props.onLogout}>Logout</a>
+                            <a className="nav-link" onClick={props.onLogout}>Выйти</a>
                         </li>
                 ): (
                         <li className="nav-item">
-                            <NavLink to="/login" className="nav-link">Login</NavLink>
+                            <NavLink to="/login" className="nav-link">Зайти</NavLink>
                         </li>
                 )}
             </ul>

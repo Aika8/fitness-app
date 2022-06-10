@@ -8,7 +8,7 @@ const Home = (props) => {
             <Navbar authenticated={props.authenticated} onLogout={props.onLogout} currentUser={props.currentUser}/>
             <section className="motivation" id="motivation">
                 <div>
-                    <h2>Тренировки не самоцель.</h2>
+                    <h2>Тренировки не самоцель</h2>
                     <p>
 Это средство, чтобы каждый день были силы пробовать новое, заниматься любимыми хобби, <br/>путешествовать и кайфовать от жизни.
                     </p>

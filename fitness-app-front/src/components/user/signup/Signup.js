@@ -21,13 +21,13 @@ class Signup extends Component {
         return (
             <div className="signup-container">
                 <div className="signup-content">
-                    <h1 className="signup-title">Signup with SpringSocial</h1>
+                <h1 className="login-title">Sign Up to MariaPlume</h1>
                     <SocialSignup />
                     <div className="or-separator">
-                        <span className="or-text">OR</span>
+                        <span className="or-text">Или</span>
                     </div>
                     <SignupForm {...this.props} />
-                    <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
+                    <span className="login-link">Уже есть аккаунт? <Link to="/login">Зайти!</Link></span>
                 </div>
             </div>
         );
@@ -40,7 +40,7 @@ class SocialSignup extends Component {
         return (
             <div className="social-signup">
                 <a className="btn btn-block social-btn google" href={GOOGLE_AUTH_URL}>
-                    <img src={googleLogo} alt="Google" /> Sign up with Google</a>
+                    <img src={googleLogo} alt="Google" style={{marginTop:"-4px"}}/> Регистрация через Google </a>
             </div>
         );
     }
@@ -87,21 +87,21 @@ class SignupForm extends Component {
             <form onSubmit={this.handleSubmit}>
                 <div className="form-item">
                     <input type="text" name="name" 
-                        className="form-control" placeholder="Name"
+                        className="form-control mb-2" placeholder="Имя"
                         value={this.state.name} onChange={this.handleInputChange} required/>
                 </div>
                 <div className="form-item">
                     <input type="email" name="email" 
-                        className="form-control" placeholder="Email"
+                        className="form-control mb-2" placeholder="Почта"
                         value={this.state.email} onChange={this.handleInputChange} required/>
                 </div>
                 <div className="form-item">
                     <input type="password" name="password" 
-                        className="form-control" placeholder="Password"
+                        className="form-control mb-2" placeholder="Пароль"
                         value={this.state.password} onChange={this.handleInputChange} required/>
                 </div>
                 <div className="form-item">
-                    <button type="submit" className="btn btn-block btn-primary" >Sign Up</button>
+                    <button type="submit" className="btn btn-block btn-primary" >Зарегистрироваться</button>
                 </div>
             </form>                    
 

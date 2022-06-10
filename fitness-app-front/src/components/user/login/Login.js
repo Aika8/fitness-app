@@ -23,10 +23,10 @@ const Login = ({authenticated, setAuth}) => {
                 <h1 className="login-title">Login to MariaPlume</h1>
                 <SocialLogin />
                 <div className="or-separator">
-                    <span className="or-text">OR</span>
+                    <span className="or-text">Или</span>
                 </div>
                 <LoginForm setAuth={setAuth}/>
-                <span className="signup-link">New user? <Link to="/signup">Sign up!</Link></span>
+                <span className="signup-link">Новый пользователь? <Link to="/signup">Зарегистрируйся</Link></span>
             </div>
         </div>
     );
@@ -35,9 +35,9 @@ const Login = ({authenticated, setAuth}) => {
 const SocialLogin =() => {
  
     return (
-        <div className="social-login">
+        <div className="social-login d-flex">
             <a className="btn btn-block social-btn google" href={GOOGLE_AUTH_URL}>
-                <img src={googleLogo} alt="Google" /> Log in with Google</a>
+                <img src={googleLogo} alt="Google" style={{marginTop:"-5px"}}/> Зайти через Google</a>
         </div>
     );
 
@@ -84,7 +84,7 @@ const LoginForm = ({setAuth}) =>  {
             <form onSubmit={handleSubmit}>
                 <div className="form-item mb-2">
                     <input type="email" name="email" 
-                        className="form-control" placeholder="Email"
+                        className="form-control" placeholder="Почта"
                         value={email} onChange={e=>{
                             setEmail(e.target.value);
                             setShow(false); 
@@ -92,11 +92,11 @@ const LoginForm = ({setAuth}) =>  {
                 </div>
                 <div className="form-item">
                     <input type="password" name="password" 
-                        className="form-control" placeholder="Password"
+                        className="form-control mb-2" placeholder="Пароль"
                         value={password} onChange={e=>setPassword(e.target.value)} required/>
                 </div>
                 <div className="form-item">
-                    <button type="submit" className="btn btn-block btn-primary">Login</button>
+                    <button type="submit" className="btn btn-block btn-primary">Зайти</button>
                 </div>
                 <AlertDismissibleExample show={show} text={text}/>
             </form>                    

@@ -23,7 +23,7 @@ const Admin = ({currentUser}) => {
             <div id="content">
                 <Nav />
                 <div className="container">
-                    <h1>Hello Admin</h1>               
+                    <h1>Привет!!</h1>               
                 </div>
 
             </div>

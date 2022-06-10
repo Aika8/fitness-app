@@ -1,7 +1,17 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
-
+import { getCurrentUser } from "../../util/APIUtils";
 const Nav = () => {
+
+    const [user, setUser] = useState({});
+
+    useEffect(()=>{
+        getCurrentUser()
+            .then(response => {
+                setUser(response)
+            });
+    },[]);
+
     return (
         <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
@@ -162,9 +172,9 @@ const Nav = () => {
             <li className="nav-item dropdown no-arrow">
                 <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">{user.name}</span>
                     <img className="img-profile rounded-circle"
-                        src="img/undraw_profile.svg"/>
+                        src={user.imageUrl}/>
                 </a>
                 <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                     aria-labelledby="userDropdown">
@@ -172,14 +182,6 @@ const Nav = () => {
                         <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
                     </NavLink>
-                    <a className="dropdown-item" href="#">
-                        <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Settings
-                    </a>
-                    <a className="dropdown-item" href="#">
-                        <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Activity Log
-                    </a>
                     <div className="dropdown-divider"></div>
                     <a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                         <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

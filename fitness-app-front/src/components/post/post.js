@@ -42,16 +42,18 @@ const Post = () => {
             </nav>
             <div className="container main_post_div">
                 <div className="post">
-                    <h1>{post.title}</h1>
+                    <div className="d-flex justify-content-between">
+                        <h1>{post.title}</h1>
+                        <button className="btn btn-success btn-sm">Like</button>
+                    </div>
                     <div className="line"></div>
                     <div dangerouslySetInnerHTML={{ __html: post.description }}>
                     </div>
                 </div>
-                <div className="likes"></div>
             </div>
             <div className="main_post_comments">
                 <div className="responses">
-                    <h4>Responses({comments.length})</h4>
+                    <h4>Комментарии({comments.length})</h4>
                     <form onSubmit={handleComment}>
                         <input name="comment" type="text" placeholder="Что думаете?" class="form-control" 
                     value={text} onChange={(e)=>setText(e.target.value)} />

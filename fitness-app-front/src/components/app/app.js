@@ -5,6 +5,8 @@ import Admin from '../admin';
 import AdminPosts from '../admin/pages/posts';
 import AddPost from '../admin/pages/posts/add';
 import EditPost from '../admin/pages/posts/edit';
+import AdminUsers from '../admin/pages/users';
+import AdminRoles from '../admin/pages/roles';
 
 import Login from '../user/login/Login';
 import Signup from '../user/signup/Signup';
@@ -94,10 +96,13 @@ class App extends Component {
                         <Route exact path="/post/:id" element ={<Post />}/>
 
                         <Route path="/admin"  element={<Admin currentUser={this.state.currentUser}/>}/>
-                        <Route exact path="/admin/posts/"  element={<AdminPosts/>}/>
+                        <Route path="/admin/posts/"  element={<AdminPosts/>}/>
                         <Route path="/admin/post/add"  element={<AddPost/>}/>
                         <Route path="/admin/post/edit/:id"  element={<EditPost/>}/>
+                        <Route path="/admin/users/"  element={<AdminUsers/>}/>
+                        <Route path="/admin/roles/"  element={<AdminRoles/>}/>
 
+                        AdminUsers
                         <Route path="/profile" 
                             element={<Profile authenticated={this.state.authenticated} currentUser={this.state.currentUser} />}/>
 

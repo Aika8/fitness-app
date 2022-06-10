@@ -7,7 +7,8 @@ import axios from 'axios';
 
 
 const axiosInstanse  = axios.create({
-  baseURL: "http://51.116.236.19:8080"
+  // baseURL: "http://51.116.236.19:8080"
+  baseURL: "http://localhost:8080"
 });
 
 
@@ -27,9 +28,44 @@ export const addPost = async(post, ACCESS_TOKEN) => {
    });
 }
 
+export const deletePost = async(id, ACCESS_TOKEN) => {
+  return await axiosInstanse.delete(`/api/post/${id}`, {
+    headers: {
+      Authorization: 'Bearer ' + ACCESS_TOKEN
+    }
+   });
+}
+
 export const addComment = async(comment, ACCESS_TOKEN) => {
 
   return await axiosInstanse.post(`/api/comment/`, comment, {
+    headers: {
+      Authorization: 'Bearer ' + ACCESS_TOKEN
+    }
+   });
+}
+
+export const getAllUsers = async(page, ACCESS_TOKEN) => {
+
+  return await axiosInstanse.get(`/api/user/all?page=${page-1}&sort=id,desc`, {
+    headers: {
+      Authorization: 'Bearer ' + ACCESS_TOKEN
+    }
+   });
+}
+
+export const getAllRoles = async(ACCESS_TOKEN) => {
+
+  return await axiosInstanse.get(`/api/role/all`, {
+    headers: {
+      Authorization: 'Bearer ' + ACCESS_TOKEN
+    }
+   });
+}
+
+export const saveUser = async(user, ACCESS_TOKEN) => {
+
+  return await axiosInstanse.post(`/api/user`, user ,{
     headers: {
       Authorization: 'Bearer ' + ACCESS_TOKEN
     }

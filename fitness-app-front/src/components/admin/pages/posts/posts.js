@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { getAllPosts } from "../../../../service/service";
+import { getAllPosts , deletePost} from "../../../../service/service";
 import Navbar from "../../navbar";
 import Nav from '../../nav';
 import { NavLink } from "react-router-dom";
@@ -16,14 +16,16 @@ const Posts = () => {
         });
       }, []);
 
-    const deletePost = (id) => {
+    const deletePostFromTable = (id) => {
         setPosts(posts.filter(e => e.id !== id));
-    }
+        deletePost(id, localStorage.getItem('accessToken'));
+    }   
     
     const newPage = (page) => {
         getAllPosts(page).then(res=>{
             setPosts(res.data.content);
             setCurrent(res.data.number);
+            setSize(res.data.totalPages);
           });
     }
 
@@ -38,10 +40,12 @@ const Posts = () => {
             <div id="content">
                 <Nav />
                 <div className="container">
-                <div>
+
                     <NavLink to="/admin/post/add" className="btn btn-secondary mb-2">Add new posts</NavLink>
-            <table class="table table-striped table-hover" data-pagination="true">
-                <thead class="thead-dark">
+                    
+               
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
                     <tr>
                         <th scope="col" >#</th>
                         <th scope="col" className="w-75">Title</th>
@@ -56,17 +60,17 @@ const Posts = () => {
                                     <td>{e.id}</td>
                                     <td>{e.title}</td>
                                     <td>
-                                        <NavLink to={`/admin/post/edit/${e.id}`} className="btn btn-primary">Update</NavLink>
+                                        <NavLink to={`/admin/post/edit/${e.id}`} className="btn btn-primary" style={{marginRight:"8px"}}>Update</NavLink>
                                         <span className="btn btn-warning"  
                                         name = {e.id}
-                                        onClick={()=>deletePost(e.id)}>Delete</span></td>
+                                        onClick={()=>deletePostFromTable(e.id)}>Delete</span></td>
                                 </tr>
                             )
                         })
                     }
                 </tbody>
                 </table>
-                    <nav aria-label="Page navigation ">
+                <nav aria-label="Page navigation ">
                         <ul class="pagination">
                             <li class="page-item"><a class="page-link" onClick={()=>newPage(current-1)}>Previous</a></li>
                             {
@@ -78,12 +82,12 @@ const Posts = () => {
                             <li class="page-item"><a class="page-link"  onClick={()=>newPage(current+1)}>Next</a></li>
                         </ul>
                     </nav>
+                </div>
+             
+                </div>
+                  
                     </div>                
                 </div>
-            </div>
-        </div>
-
-    </div>
 
        
     )
