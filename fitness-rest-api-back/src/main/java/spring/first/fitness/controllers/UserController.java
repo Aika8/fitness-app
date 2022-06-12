@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.first.fitness.dto.UserDTO;
+import spring.first.fitness.payload.UserUpdateRequest;
 import spring.first.fitness.services.UserService;
 
 @Slf4j
@@ -43,11 +44,16 @@ public class UserController {
     }
 
     @PostMapping
-    @ApiOperation(value = "update user's name, imageUrl or role")
+    @ApiOperation(value = "update user's name, imageUrl")
     public ResponseEntity<UserDTO> update(@RequestBody UserDTO dto) {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
+    @PostMapping
+    @ApiOperation(value = "update user's role")
+    public ResponseEntity<UserDTO> updateRole(@RequestBody UserUpdateRequest dto) {
+        return ResponseEntity.ok(userService.updateRole(dto));
+    }
 
     @GetMapping(value = "/all")
     @ApiOperation(value = "Get users")

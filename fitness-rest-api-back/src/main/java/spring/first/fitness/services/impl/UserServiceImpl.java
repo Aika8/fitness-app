@@ -15,6 +15,7 @@ import spring.first.fitness.entity.Role;
 import spring.first.fitness.entity.Users;
 import spring.first.fitness.exceptions.AccessDeniedException;
 import spring.first.fitness.exceptions.BadRequestException;
+import spring.first.fitness.payload.UserUpdateRequest;
 import spring.first.fitness.repos.RoleRepository;
 import spring.first.fitness.repos.UserRepository;
 import spring.first.fitness.security.oauth2.UserPrincipal;
@@ -68,7 +69,17 @@ public class UserServiceImpl implements UserService {
         checkUser.setName(user.getName());
         checkUser.setImageUrl(user.getImageUrl());
         return getUserDto(userRepository.save(checkUser));
+    }
 
+    @Override
+    public UserDTO updateRole(UserUpdateRequest user) {
+        Users checkUser = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new NotFoundException(EMAIL + user.getEmail()));
+
+        Role role = Optional.of(roleRepository.findByName(user.getRoleName()))
+                .orElseThrow(() -> new NotFoundException(EMAIL + user.getEmail()));
+        checkUser.setRole(role);
+        return getUserDto(userRepository.save(checkUser));
     }
 
     @Override
