@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(dto));
     }
 
-    @PostMapping
+    @PostMapping(value = "/role")
     @ApiOperation(value = "update user's role")
     public ResponseEntity<UserDTO> updateRole(@RequestBody UserUpdateRequest dto) {
         return ResponseEntity.ok(userService.updateRole(dto));
