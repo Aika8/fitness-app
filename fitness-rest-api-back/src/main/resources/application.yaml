@@ -44,4 +44,4 @@ app:
 
     authorizedRedirectUris:
       - http://localhost:80/oauth2/redirect
-      - http://plume.fit:80/oauth2/redirect
+      - http://maria.germanywestcentral.cloudapp.azure.com/oauth2/redirect
