@@ -35,7 +35,7 @@ app:
     tokenSecret: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
     tokenExpirationMsec: 864000000
   cors:
-    allowedOrigins: http://localhost,http://localhost:8080,http://maria.germanywestcentral.cloudapp.azure.com,http://maria.germanywestcentral.cloudapp.azure.com:8080
+    allowedOrigins: http://localhost,http://localhost:8080,http://plume.fit,http://plume.fit:8080
     # Comma separated list of allowed origins
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,
@@ -44,4 +44,4 @@ app:
 
     authorizedRedirectUris:
       - http://localhost:80/oauth2/redirect
-      - http://maria.germanywestcentral.cloudapp.azure.com/oauth2/redirect
+      - http://plume.fit/oauth2/redirect

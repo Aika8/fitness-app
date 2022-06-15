@@ -7,7 +7,7 @@ import axios from 'axios';
 
 
 const axiosInstanse  = axios.create({
-  baseURL: "http://maria.germanywestcentral.cloudapp.azure.com:8080"
+  baseURL: "http://plume.fit:8080"
    //baseURL: "http://localhost:8080"
 });
 
